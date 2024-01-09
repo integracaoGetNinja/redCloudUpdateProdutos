@@ -2,7 +2,7 @@ import pandas as pd
 import base64
 from pymongo import MongoClient
 import os
-
+# > pyinstaller  spec.spec
 client = MongoClient(
     'mongodb+srv://henriquedb:Y2du8cnwhZYzjrlE@cluster0.vgf811c.mongodb.net/?retryWrites=true&w=majority')
 db = client['db_produtos']
@@ -14,21 +14,22 @@ ALLOWED_EXTENSIONS = {'xls', 'xlsx'}
 def atualizar_banco(tabela_excel):
     col.delete_many({})
 
-    linha_inicial = 7
+    linha_inicial = 2
 
     df = pd.read_excel(tabela_excel, skiprows=range(1, linha_inicial))
 
     lista_dados = []
     for indice, data in df.iterrows():
-        sku = data.iloc[2]
+        sku = str(data.iloc[2])
+        print(f"Produto {indice} registrado!")
         lista_dados.append({
             "_id": base64.b64encode(sku.encode('utf-8')).decode('utf-8'),
             "sku": sku,
             "estoque": data.iloc[9],
             "nome": data.iloc[3],
-            "preco": data.iloc[13]
+            "preco": data.iloc[12]
         })
-
+    print("Inserindo no banco de dados...")
     col.insert_many(lista_dados)
     print("Produtos atualizados no banco de dados!")
     input("ok!")
