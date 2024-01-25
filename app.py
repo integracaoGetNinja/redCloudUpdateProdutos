@@ -22,9 +22,10 @@ def atualizar_banco(tabela_excel):
     lista_dados = []
     for indice, data in df.iterrows():
         sku = str(data.iloc[2])
-        estoque = data.iloc[9]
+        estoque = data.iloc[8]
         nome = data.iloc[3]
         preco = data.iloc[12]
+        fornecedor = data.iloc[5]
 
         if str(estoque).lower() == "nan":
             estoque = 0.0
@@ -35,6 +36,9 @@ def atualizar_banco(tabela_excel):
         if str(preco).lower() == "nan":
             preco = 0.0
 
+        if str(fornecedor).lower() == "nan":
+            fornecedor = ""
+
         print(f"Produto {indice} registrado!")
 
         lista_dados.append({
@@ -42,7 +46,8 @@ def atualizar_banco(tabela_excel):
             "sku": sku,
             "estoque": estoque,
             "nome": nome,
-            "preco": preco
+            "preco": preco,
+            "fornecedor": fornecedor
         })
 
     print("Inserindo no banco de dados...")
@@ -61,7 +66,7 @@ for arquivo in arquivos:
         if ex_arquivo[1] in ALLOWED_EXTENSIONS:
             lista_arq.append(arquivo)
 
-print("Versão 2.0 - Correção de valores nulos")
+print("Versão 3.0 - Campo Fornecedor Adicionado/ Correcao de Coluna Estoque")
 input(f"Foram reconhecidos {len(lista_arq)} arquivos de excel, escolha qual deve ser usado: ok!")
 for arquivo in lista_arq:
     resposta = int(input(f"{arquivo} SIM (1) ou não (2): "))
