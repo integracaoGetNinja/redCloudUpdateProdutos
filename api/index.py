@@ -6,12 +6,19 @@ client = MongoClient(
 db = client['db_produtos']
 col = db['col_produtos']
 
+col_clientes = db['col_clientes']
+
 app = Flask(__name__)
 
 
 @app.route("/produtos")
 def produtos():
     return jsonify([x for x in col.find({})])
+
+
+@app.route("/clientes")
+def clientes():
+    return jsonify([x for x in col_clientes.find({})])
 
 
 if __name__ == "__main__":
