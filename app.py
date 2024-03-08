@@ -21,6 +21,7 @@ ALLOWED_EXTENSIONS = {'xls', 'xlsx'}
 
 
 def atualizar_distribuidores(tabela_excel):
+    col_distribuidores.delete_many({})
     linha_inicial = 1
 
     df = pd.read_excel(tabela_excel, skiprows=range(1, linha_inicial))
@@ -35,6 +36,7 @@ def atualizar_distribuidores(tabela_excel):
         aceitaVouche = str(data.iloc[10])
 
         lista_dados.append({
+            "_id": base64.b64encode(str(uuid.uuid4()).encode('utf-8')).decode('utf-8'),
             "empresa": empresa,
             "valorMinimo": valorMinimo,
             "frete": frete,

@@ -7,8 +7,14 @@ db = client['db_produtos']
 col = db['col_produtos']
 
 col_clientes = db['col_clientes']
+col_distribuidores = db['col_distribuidores']
 
 app = Flask(__name__)
+
+
+@app.route("/distribuidores")
+def distribuidores():
+    return jsonify([x for x in col_distribuidores.find({})])
 
 
 @app.route("/produtos")
