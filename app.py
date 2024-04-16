@@ -20,6 +20,23 @@ col_distribuidores = db['col_distribuidores']
 ALLOWED_EXTENSIONS = {'xls', 'xlsx'}
 
 
+def atualizar_status(tabela_excel):
+    linha_inicial = 1
+    df = pd.read_excel(tabela_excel, skiprows=range(1, linha_inicial))
+
+    for indice, data in df.iterrows():
+        idCredito = str(data.iloc[0])
+        status = str(data.iloc[1])
+
+        url = "https://redcloudapppedidos-default-rtdb.firebaseio.com/creditos/" + idCredito + ".json"
+
+        requests.patch(url, json={'status': status})
+        print(idCredito, " ", status)
+
+    print("Status das Solicitações de Crédito Atualizadas!")
+    input("ok!")
+
+
 def atualizar_distribuidores(tabela_excel):
     col_distribuidores.delete_many({})
     linha_inicial = 1
@@ -29,20 +46,32 @@ def atualizar_distribuidores(tabela_excel):
     lista_dados = []
     for indice, data in df.iterrows():
         empresa = str(data.iloc[0])
+        cidade = str(data.iloc[1])
+        zonaEntrega = str(data.iloc[2])
+        produtos = str(data.iloc[3])
         valorMinimo = str(data.iloc[4])
         frete = str(data.iloc[5])
         meioPagamento = str(data.iloc[6])
         prazo = str(data.iloc[7])
-        aceitaVouche = str(data.iloc[10])
+        fraquenciaAtualizacao = str(data.iloc[8])
+        aceitaVouche = str(data.iloc[9])
+        horarioCorte = str(data.iloc[10])
+        obs = str(data.iloc[11])
 
         lista_dados.append({
             "_id": base64.b64encode(str(uuid.uuid4()).encode('utf-8')).decode('utf-8'),
             "empresa": empresa,
+            "cidade": cidade,
+            "zonaEntrega": zonaEntrega,
+            "produtos": produtos,
             "valorMinimo": valorMinimo,
             "frete": frete,
             "meioPagamento": meioPagamento,
             "prazo": prazo,
-            "aceitaVouche": aceitaVouche
+            "fraquenciaAtualizacao": fraquenciaAtualizacao,
+            "aceitaVouche": aceitaVouche,
+            "horarioCorte": horarioCorte,
+            "obs": obs
         })
 
         print(f"Distribuidor {indice} registrado!")
@@ -198,7 +227,8 @@ for arquivo in arquivos:
 
 print("Versão 5.0")
 
-clienteOrProduto = input("Atualizar Clientes ( 1 )\nAtualizar Produtos ( 2 )\nAtualizar Distribuidores ( 3 )\nR - ")
+clienteOrProduto = input(
+    "Atualizar Clientes ( 1 )\nAtualizar Produtos ( 2 )\nAtualizar Distribuidores ( 3 )\nAtualizar Status em Massa ( 4 )\nR - ")
 
 input(f"Foram reconhecidos {len(lista_arq)} arquivos de excel, escolha qual deve ser usado: ok!")
 for arquivo in lista_arq:
@@ -212,4 +242,6 @@ for arquivo in lista_arq:
             atualizar_produtos(arquivo)
         elif clienteOrProduto == "3":
             atualizar_distribuidores(arquivo)
+        elif clienteOrProduto == "4":
+            atualizar_status(arquivo)
         break
