@@ -54,9 +54,9 @@ def atualizar_distribuidores(tabela_excel):
         meioPagamento = str(data.iloc[6])
         prazo = str(data.iloc[7])
         fraquenciaAtualizacao = str(data.iloc[8])
-        aceitaVouche = str(data.iloc[9])
-        horarioCorte = str(data.iloc[10])
-        obs = str(data.iloc[11])
+        aceitaVouche = str(data.iloc[10])
+        horarioCorte = str(data.iloc[11])
+        obs = str(data.iloc[12])
 
         lista_dados.append({
             "_id": base64.b64encode(str(uuid.uuid4()).encode('utf-8')).decode('utf-8'),
