@@ -37,6 +37,23 @@ def atualizar_status(tabela_excel):
     input("ok!")
 
 
+def atualizar_status_pedido(tabela_excel):
+    linha_inicial = 1
+    df = pd.read_excel(tabela_excel, skiprows=range(1, linha_inicial))
+
+    for indice, data in df.iterrows():
+        idPedido = str(data.iloc[0])
+        status = str(data.iloc[1])
+
+        url = "https://redcloudapppedidos-default-rtdb.firebaseio.com/pedidos/" + idPedido + ".json"
+
+        requests.patch(url, json={'status': status})
+        print(idPedido, " ", status)
+
+    print("Status das Solicitações de Produtos Atualizados!")
+    input("ok!")
+
+
 def atualizar_distribuidores(tabela_excel):
     col_distribuidores.delete_many({})
     linha_inicial = 1
@@ -225,10 +242,11 @@ for arquivo in arquivos:
         if ex_arquivo[1] in ALLOWED_EXTENSIONS:
             lista_arq.append(arquivo)
 
-print("Versão 5.0")
+print("Versão 6.0")
 
 clienteOrProduto = input(
-    "Atualizar Clientes ( 1 )\nAtualizar Produtos ( 2 )\nAtualizar Distribuidores ( 3 )\nAtualizar Status em Massa ( 4 )\nR - ")
+    "Atualizar Clientes ( 1 )\nAtualizar Produtos ( 2 )\nAtualizar Distribuidores ( 3 )\nAtualizar Status Crédito ( 4 "
+    ")\nAtualizar Status Produto ( 5 )\nR - ")
 
 input(f"Foram reconhecidos {len(lista_arq)} arquivos de excel, escolha qual deve ser usado: ok!")
 for arquivo in lista_arq:
@@ -244,4 +262,6 @@ for arquivo in lista_arq:
             atualizar_distribuidores(arquivo)
         elif clienteOrProduto == "4":
             atualizar_status(arquivo)
+        elif clienteOrProduto == "5":
+            atualizar_status_pedido(arquivo)
         break
