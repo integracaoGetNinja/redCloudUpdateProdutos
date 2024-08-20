@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from pymongo import MongoClient
 
 client = MongoClient(
@@ -19,7 +19,19 @@ def distribuidores():
 
 @app.route("/produtos")
 def produtos():
-    return jsonify([x for x in col.find({})])
+    try:
+        offset = int(request.args.get('offset', 0))
+        limit = int(request.args.get('limit', 1000))
+        produtos = list(col.find({}).skip(offset).limit(limit))
+
+        total_count = col.count_documents({})
+
+        return jsonify({
+            'total': total_count,
+            'produtos': produtos
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}),
 
 
 @app.route("/clientes")
