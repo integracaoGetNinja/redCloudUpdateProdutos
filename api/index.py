@@ -32,7 +32,7 @@ def get_image_product():
         })
     else:
         return jsonify({
-            "img": jsonify('https://i.imgur.com/kdlBSiV.png')
+            "img": 'https://i.imgur.com/kdlBSiV.png'
         })
 
 
