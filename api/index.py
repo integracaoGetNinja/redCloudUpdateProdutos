@@ -9,7 +9,7 @@ db = client['db_produtos']
 col = db['col_produtos']
 
 clientImages = MongoClient('mongodb://195.200.6.225:27017/')
-db_images = client['db_images']
+db_images = clientImages['db_images']
 col_images = db_images['product_images']
 fs = gridfs.GridFS(db_images)
 
