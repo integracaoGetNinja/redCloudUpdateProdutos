@@ -24,7 +24,7 @@ def distribuidores():
     return jsonify([x for x in col_distribuidores.find({})])
 
 
-@app.route('/image/<img_id>')
+@app.route('/get/imagem/produto/<img_id>')
 def serve_image(img_id):
     try:
         file = fs.get(objectid.ObjectId(img_id))
