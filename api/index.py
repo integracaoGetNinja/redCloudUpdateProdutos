@@ -8,7 +8,7 @@ client = MongoClient(
 db = client['db_produtos']
 col = db['col_produtos']
 
-clientImages = MongoClient('mongodb://195.200.6.225:27017/')
+clientImages = MongoClient('mongodb://195.200.6.225:22077/')
 db_images = clientImages['db_images']
 col_images = db_images['product_images']
 fs = gridfs.GridFS(db_images)
@@ -36,6 +36,7 @@ def serve_image(img_id):
 @app.route('/get/imagem/produto')
 def get_image_product():
     sku = request.args.get('sku')
+
     image_payload = col_images.find_one({'sku': sku})
 
     if image_payload:
