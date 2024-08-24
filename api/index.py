@@ -33,8 +33,9 @@ def serve_image(img_id):
         return str(e), 404
 
 
-@app.route('/get/imagem/produto/<sku>')
-def get_image_product(sku):
+@app.route('/get/imagem/produto')
+def get_image_product():
+    sku = request.args.get('sku')
     image_payload = col_images.find_one({'sku': sku})
 
     if image_payload:
