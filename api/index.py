@@ -6,6 +6,9 @@ client = MongoClient(
 db = client['db_produtos']
 col = db['col_produtos']
 
+db_images = client['db_images']
+col_images = db_images['product_images']
+
 col_clientes = db['col_clientes']
 col_distribuidores = db['col_distribuidores']
 
@@ -15,6 +18,22 @@ app = Flask(__name__)
 @app.route("/distribuidores")
 def distribuidores():
     return jsonify([x for x in col_distribuidores.find({})])
+
+
+@app.route('/get/imagem/produto')
+def get_image_product():
+    sku = request.args.get('sku')
+
+    image_payload = col_images.find_one({'sku': sku})
+
+    if image_payload:
+        return jsonify({
+            "img": image_payload.get('img')
+        })
+    else:
+        return jsonify({
+            "img": jsonify('https://i.imgur.com/kdlBSiV.png')
+        })
 
 
 @app.route("/produtos")
