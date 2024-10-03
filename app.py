@@ -5,6 +5,7 @@ import os
 import uuid
 import requests
 from datetime import datetime
+import json
 
 # > pyinstaller  spec.spec
 # winclassbenicio@gmail.com
@@ -20,7 +21,7 @@ col_distribuidores = db['col_distribuidores']
 ALLOWED_EXTENSIONS = {'xls', 'xlsx'}
 
 
-def atualizar_status(tabela_excel):
+def atualizar_status_credito(tabela_excel):
     linha_inicial = 1
     df = pd.read_excel(tabela_excel, skiprows=range(1, linha_inicial))
 
@@ -28,16 +29,25 @@ def atualizar_status(tabela_excel):
         idCredito = str(data.iloc[0])
         status = str(data.iloc[1])
 
-        url = "https://redcloudapppedidos-default-rtdb.firebaseio.com/creditos/" + idCredito + ".json"
+        payload = json.dumps({
+            "isCredito": True,
+            "status": status
+        })
+        headers = {
+            'Authorization': 'chave_api 32b19b99033db32ab955 aplicacao 120f779a-59dc-4351-92f6-857efd50362a',
+            'Content-Type': 'application/json'
+        }
 
-        requests.patch(url, json={'status': status})
+        url = "http://191.252.178.129:5000/atualizar_status/" + idCredito
+
+        requests.put(url, headers=headers, data=payload)
         print(idCredito, " ", status)
 
     print("Status das Solicitações de Crédito Atualizadas!")
     input("ok!")
 
 
-def atualizar_status_pedido(tabela_excel):
+def atualizar_status_produto(tabela_excel):
     linha_inicial = 1
     df = pd.read_excel(tabela_excel, skiprows=range(1, linha_inicial))
 
@@ -45,9 +55,19 @@ def atualizar_status_pedido(tabela_excel):
         idPedido = str(data.iloc[0])
         status = str(data.iloc[1])
 
-        url = "https://redcloudapppedidos-default-rtdb.firebaseio.com/pedidos/" + idPedido + ".json"
+        payload = json.dumps({
+            "isCredito": False,
+            "status": status
+        })
+        headers = {
+            'Authorization': 'chave_api 32b19b99033db32ab955 aplicacao 120f779a-59dc-4351-92f6-857efd50362a',
+            'Content-Type': 'application/json'
+        }
 
-        requests.patch(url, json={'status': status})
+        url = "http://191.252.178.129:5000/atualizar_status/" + idPedido
+
+        respost = requests.put(url, data=payload, headers=headers)
+        print(respost.status_code)
         print(idPedido, " ", status)
 
     print("Status das Solicitações de Produtos Atualizados!")
@@ -242,7 +262,7 @@ for arquivo in arquivos:
         if ex_arquivo[1] in ALLOWED_EXTENSIONS:
             lista_arq.append(arquivo)
 
-print("Versão 6.0")
+print("Versão 7.0")
 
 clienteOrProduto = input(
     "Atualizar Clientes ( 1 )\nAtualizar Produtos ( 2 )\nAtualizar Distribuidores ( 3 )\nAtualizar Status Crédito ( 4 "
@@ -261,7 +281,7 @@ for arquivo in lista_arq:
         elif clienteOrProduto == "3":
             atualizar_distribuidores(arquivo)
         elif clienteOrProduto == "4":
-            atualizar_status(arquivo)
+            atualizar_status_credito(arquivo)
         elif clienteOrProduto == "5":
-            atualizar_status_pedido(arquivo)
+            atualizar_status_produto(arquivo)
         break
