@@ -165,11 +165,18 @@ def atualizar_produtos(tabela_excel):
     formato = "%Y-%m-%d %H:%M:%S"
     data_hora_formatada = data_hora_atual.strftime(formato)
 
-    url_put = "https://redcloudapppedidos-default-rtdb.firebaseio.com/info.json"
+    url_put = "http://191.252.178.129:5000/last_update"
 
-    dados = {"dataHora": data_hora_formatada}
+    payload = json.dumps({
+        "msg": data_hora_formatada
+    })
 
-    response = requests.put(url_put, json=dados)
+    headers = {
+        'Authorization': 'chave_api 32b19b99033db32ab955 aplicacao 120f779a-59dc-4351-92f6-857efd50362a',
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.post(url_put, data=payload, headers=headers)
 
     if response.status_code == 200:
         print(data_hora_formatada)
